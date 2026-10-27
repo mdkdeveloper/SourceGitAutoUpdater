@@ -1,0 +1,43 @@
+name: Build
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Build launcher
+        run: dotnet build src/SourceGitAutoUpdater/SourceGitAutoUpdater.csproj -c Release
+      - name: Run core regression scenarios
+        run: dotnet run --project tests/SourceGitAutoUpdater.Core.Tests/SourceGitAutoUpdater.Core.Tests.csproj -c Release
+      - name: Run headless UI scenarios
+        run: dotnet run --project tests/SourceGitAutoUpdater.UI.Tests/SourceGitAutoUpdater.UI.Tests.csproj -c Release
+      - name: Verify native Windows integration
+        shell: pwsh
+        run: ./src/SourceGitAutoUpdater/Windows/Verify.ps1
+      - name: Publish real launcher for startup acceptance
+        run: dotnet publish src/SourceGitAutoUpdater/SourceGitAutoUpdater.csproj -c Release -r win-x64 --self-contained true -o artifacts/publish/win-x64
+      - name: Verify real launcher with isolated SourceGit fixture
+        shell: pwsh
+        run: ./tests/verify-launcher.ps1 -PublishDirectory artifacts/publish/win-x64
+      - name: Check packaging scripts syntax
+        shell: pwsh
+        run: |
+          foreach ($script in Get-ChildItem build/*.ps1) {
+            $tokens = $null
+            $parseErrors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile($script.FullName, [ref]$tokens, [ref]$parseErrors) | Out-Null
+            if ($parseErrors.Count) { throw ($parseErrors | Out-String) }
+          }
+
+
+
+

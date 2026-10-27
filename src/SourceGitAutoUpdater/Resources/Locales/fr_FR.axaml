@@ -1,0 +1,14 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<x:String x:Key="Text.Cancel" xml:space="preserve">ANNULER</x:String>
+<x:String x:Key="Text.Close" xml:space="preserve">FERMER</x:String>
+<x:String x:Key="Text.No" xml:space="preserve">NON</x:String>
+<x:String x:Key="Text.SelfUpdate.Available" xml:space="preserve">Une nouvelle version du logiciel est disponible :</x:String>
+<x:String x:Key="Text.SelfUpdate.CurrentVersion" xml:space="preserve">Version actuelle : </x:String>
+<x:String x:Key="Text.SelfUpdate.Error" xml:space="preserve">La vérification de mise à jour à échouée !</x:String>
+<x:String x:Key="Text.SelfUpdate.GotoDownload" xml:space="preserve">Télécharger</x:String>
+<x:String x:Key="Text.SelfUpdate.IgnoreThisVersion" xml:space="preserve">Passer cette version</x:String>
+<x:String x:Key="Text.SelfUpdate.ReleaseDate" xml:space="preserve">Date de la nouvelle version : </x:String>
+<x:String x:Key="Text.SelfUpdate.Title" xml:space="preserve">Mise à jour du logiciel</x:String>
+<x:String x:Key="Text.SelfUpdate.UpToDate" xml:space="preserve">Il n'y a pas de mise à jour pour le moment.</x:String>
+<x:String x:Key="Text.Yes" xml:space="preserve">OUI</x:String>
+</ResourceDictionary>

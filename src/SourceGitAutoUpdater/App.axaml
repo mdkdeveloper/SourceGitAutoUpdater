@@ -1,0 +1,18 @@
+<Application xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Class="SourceGitAutoUpdater.App" RequestedThemeVariant="Default">
+ <Application.Resources>
+  <ResourceDictionary>
+   <ResourceDictionary.MergedDictionaries>
+    <ResourceInclude Source="/Resources/Themes.axaml"/>
+    <ResourceInclude Source="/Resources/Icons.axaml"/>
+   </ResourceDictionary.MergedDictionaries>
+   <FontFamily x:Key="Fonts.Default">fonts:Inter#Inter</FontFamily>
+   <FontFamily x:Key="Fonts.Monospace">fonts:SourceGitAutoUpdater#JetBrains Mono NL</FontFamily>
+   <x:Double x:Key="Font.Size">13</x:Double>
+  </ResourceDictionary>
+ </Application.Resources>
+ <Application.Styles>
+  <FluentTheme/>
+  <StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml"/>
+  <StyleInclude Source="/Resources/Styles.axaml"/>
+ </Application.Styles>
+</Application>

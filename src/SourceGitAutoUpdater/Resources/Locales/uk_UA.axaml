@@ -1,0 +1,10 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<x:String x:Key="Text.Cancel" xml:space="preserve">СКАСУВАТИ</x:String>
+<x:String x:Key="Text.Close" xml:space="preserve">ЗАКРИТИ</x:String>
+<x:String x:Key="Text.SelfUpdate.Available" xml:space="preserve">Доступна нова версія програми: </x:String>
+<x:String x:Key="Text.SelfUpdate.Error" xml:space="preserve">Не вдалося перевірити оновлення!</x:String>
+<x:String x:Key="Text.SelfUpdate.GotoDownload" xml:space="preserve">Завантажити</x:String>
+<x:String x:Key="Text.SelfUpdate.IgnoreThisVersion" xml:space="preserve">Пропустити цю версію</x:String>
+<x:String x:Key="Text.SelfUpdate.Title" xml:space="preserve">Оновлення програми</x:String>
+<x:String x:Key="Text.SelfUpdate.UpToDate" xml:space="preserve">У вас встановлена остання версія.</x:String>
+</ResourceDictionary>

@@ -1,0 +1,27 @@
+<Styles xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<Style Selector="TextBlock.bold"><Setter Property="FontWeight" Value="Bold" /></Style>
+<Style Selector="Button.caption_button"><Setter Property="Width" Value="48" /><Setter Property="BorderThickness" Value="0" /><Setter Property="VerticalAlignment" Value="Stretch" /></Style>
+<Style Selector="Button.caption_button &gt; Path"><Setter Property="Fill" Value="{DynamicResource Brush.FG1}" /></Style>
+<Style Selector="Button.caption_button /template/ ContentPresenter#PART_ContentPresenter"><Setter Property="Background" Value="Transparent" /><Setter Property="CornerRadius" Value="0" /></Style>
+<Style Selector="Button.caption_button:pointerover /template/ ContentPresenter#PART_ContentPresenter"><Setter Property="Background" Value="#40000000" /></Style>
+<Style Selector="Button.caption_button:nth-last-child(1):pointerover /template/ ContentPresenter#PART_ContentPresenter"><Setter Property="Background" Value="Red" /></Style>
+<Style Selector="Button.flat"><Setter Property="BorderThickness" Value="1" /><Setter Property="BorderBrush" Value="{DynamicResource Brush.Border2}" /><Setter Property="FontWeight" Value="Bold" /><Setter Property="TextBlock.TextAlignment" Value="Center" /><Setter Property="Foreground" Value="{DynamicResource Brush.FG1}" /><Setter Property="Background" Value="{DynamicResource Brush.FlatButton.Background}" /><Setter Property="VerticalContentAlignment" Value="Center" /><Setter Property="Template"><ControlTemplate><Grid><Border x:Name="PART_Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}" /><ContentPresenter x:Name="PART_ContentPresenter" Background="Transparent" Padding="{TemplateBinding Padding}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" /></Grid></ControlTemplate></Setter></Style>
+<Style Selector="Button.flat:pointerover /template/ Border#PART_Border"><Setter Property="Background" Value="{DynamicResource Brush.FlatButton.BackgroundHovered}" /></Style>
+<Style Selector="Button.flat:pointerover /template/ ContentPresenter#PART_ContentPresenter"><Setter Property="Background" Value="Transparent" /></Style>
+<Style Selector="Button.flat:disabled"><Setter Property="Background" Value="{DynamicResource Brush.FlatButton.Background}" /></Style>
+<Style Selector="Button.flat:disabled /template/ ContentPresenter#PART_ContentPresenter"><Setter Property="Background" Value="Transparent" /></Style>
+<Style Selector="Button.flat.primary"><Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" /><Setter Property="BorderBrush" Value="{DynamicResource AccentButtonBorderBrush}" /><Setter Property="Background" Value="{DynamicResource AccentButtonBackground}" /></Style>
+<Style Selector="Button.flat.primary:pointerover /template/ Border#PART_Border"><Setter Property="Background" Value="{DynamicResource AccentButtonBackgroundPointerOver}" /></Style>
+<Style Selector="Button.flat.primary:pointerover /template/ ContentPresenter#PART_ContentPresenter"><Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" /><Setter Property="Background" Value="Transparent" /></Style>
+<Style Selector="Button.flat.primary:disabled"><Setter Property="Opacity" Value=".65" /></Style>
+<Style Selector="Button.flat.primary:disabled /template/ ContentPresenter#PART_ContentPresenter"><Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" /></Style>
+<Style Selector="Button.flat.primary ToolTip TextBlock"><Setter Property="Foreground" Value="{DynamicResource Brush.FG1}" /></Style><Style Selector="Window">
+ <Setter Property="Background" Value="{DynamicResource Brush.Window}"/>
+ <Setter Property="Foreground" Value="{DynamicResource Brush.FG1}"/>
+ <Setter Property="BorderBrush" Value="{DynamicResource Brush.WindowBorder}"/>
+ <Setter Property="FontFamily" Value="{DynamicResource Fonts.Default}"/>
+ <Setter Property="FontSize" Value="{DynamicResource Font.Size}"/>
+</Style>
+<Style Selector="TextBlock"><Setter Property="Foreground" Value="{DynamicResource Brush.FG1}"/></Style>
+<Style Selector="Path"><Setter Property="Stretch" Value="Uniform"/><Setter Property="Fill" Value="{DynamicResource Brush.FG1}"/></Style>
+</Styles>

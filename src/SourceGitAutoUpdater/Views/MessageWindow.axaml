@@ -1,0 +1,16 @@
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ x:Class="SourceGitAutoUpdater.Views.MessageWindow" x:CompileBindings="False" Icon="/App.ico"
+ Width="480" SizeToContent="Height" CanResize="False" WindowStartupLocation="CenterScreen" BorderThickness="1" SystemDecorations="None">
+ <Grid RowDefinitions="28,Auto">
+  <Border Background="{DynamicResource Brush.TitleBar}" BorderBrush="{DynamicResource Brush.Border0}" BorderThickness="0,0,0,1" PointerPressed="Move">
+   <TextBlock Text="{Binding Title, RelativeSource={RelativeSource AncestorType=Window}}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+  </Border>
+  <StackPanel Grid.Row="1" Margin="20,16" Spacing="16">
+   <TextBlock x:Name="Message" TextWrapping="Wrap"/>
+   <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="8">
+    <Button x:Name="Accept" Classes="flat primary" Height="30" Padding="16,0" Click="Yes"/>
+    <Button x:Name="Decline" Classes="flat" Height="30" Padding="16,0" Click="No"/>
+   </StackPanel>
+  </StackPanel>
+ </Grid>
+</Window>

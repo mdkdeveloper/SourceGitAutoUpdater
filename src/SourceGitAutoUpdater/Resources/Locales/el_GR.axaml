@@ -1,0 +1,14 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<x:String x:Key="Text.Cancel" xml:space="preserve">ΑΚΥΡΟ</x:String>
+<x:String x:Key="Text.Close" xml:space="preserve">ΚΛΕΙΣΙΜΟ</x:String>
+<x:String x:Key="Text.No" xml:space="preserve">ΟΧΙ</x:String>
+<x:String x:Key="Text.SelfUpdate.Available" xml:space="preserve">Είναι διαθέσιμη νέα έκδοση αυτού του λογισμικού: </x:String>
+<x:String x:Key="Text.SelfUpdate.CurrentVersion" xml:space="preserve">Τρέχουσα έκδοση: </x:String>
+<x:String x:Key="Text.SelfUpdate.Error" xml:space="preserve">Ο έλεγχος για ενημερώσεις απέτυχε!</x:String>
+<x:String x:Key="Text.SelfUpdate.GotoDownload" xml:space="preserve">Λήψη</x:String>
+<x:String x:Key="Text.SelfUpdate.IgnoreThisVersion" xml:space="preserve">Παράλειψη αυτής της έκδοσης</x:String>
+<x:String x:Key="Text.SelfUpdate.ReleaseDate" xml:space="preserve">Ημερομηνία έκδοσης νέας έκδοσης: </x:String>
+<x:String x:Key="Text.SelfUpdate.Title" xml:space="preserve">Ενημέρωση λογισμικού</x:String>
+<x:String x:Key="Text.SelfUpdate.UpToDate" xml:space="preserve">Δεν υπάρχουν διαθέσιμες ενημερώσεις αυτή τη στιγμή.</x:String>
+<x:String x:Key="Text.Yes" xml:space="preserve">ΝΑΙ</x:String>
+</ResourceDictionary>

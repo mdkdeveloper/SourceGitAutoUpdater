@@ -1,0 +1,14 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<x:String x:Key="Text.Cancel" xml:space="preserve">BATAL</x:String>
+<x:String x:Key="Text.Close" xml:space="preserve">TUTUP</x:String>
+<x:String x:Key="Text.No" xml:space="preserve">TIDAK</x:String>
+<x:String x:Key="Text.SelfUpdate.Available" xml:space="preserve">Versi baru dari perangkat lunak ini tersedia: </x:String>
+<x:String x:Key="Text.SelfUpdate.CurrentVersion" xml:space="preserve">Versi Saat Ini: </x:String>
+<x:String x:Key="Text.SelfUpdate.Error" xml:space="preserve">Pemeriksaan pembaruan gagal!</x:String>
+<x:String x:Key="Text.SelfUpdate.GotoDownload" xml:space="preserve">Unduh</x:String>
+<x:String x:Key="Text.SelfUpdate.IgnoreThisVersion" xml:space="preserve">Lewati Versi Ini</x:String>
+<x:String x:Key="Text.SelfUpdate.ReleaseDate" xml:space="preserve">Tanggal Rilis Versi Baru: </x:String>
+<x:String x:Key="Text.SelfUpdate.Title" xml:space="preserve">Pembaruan Perangkat Lunak</x:String>
+<x:String x:Key="Text.SelfUpdate.UpToDate" xml:space="preserve">Saat ini tidak ada pembaruan yang tersedia.</x:String>
+<x:String x:Key="Text.Yes" xml:space="preserve">YA</x:String>
+</ResourceDictionary>

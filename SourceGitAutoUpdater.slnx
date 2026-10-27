@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="src/SourceGitAutoUpdater.Core/SourceGitAutoUpdater.Core.csproj" />
+  <Project Path="src/SourceGitAutoUpdater/SourceGitAutoUpdater.csproj" />
+  <Project Path="tests/SourceGitAutoUpdater.Core.Tests/SourceGitAutoUpdater.Core.Tests.csproj" />
+  <Project Path="tests/SourceGitAutoUpdater.UI.Tests/SourceGitAutoUpdater.UI.Tests.csproj" />
+</Solution>
+

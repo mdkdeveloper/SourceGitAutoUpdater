@@ -1,0 +1,10 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<x:String x:Key="Text.Cancel" xml:space="preserve">விடு</x:String>
+<x:String x:Key="Text.Close" xml:space="preserve">மூடு</x:String>
+<x:String x:Key="Text.SelfUpdate.Available" xml:space="preserve">இந்த மென்பொருளின் புதிய பதிப்பு கிடைக்கிறது: </x:String>
+<x:String x:Key="Text.SelfUpdate.Error" xml:space="preserve">புதுப்பிப்புகளைச் சரிபார்க்க முடியவில்லை!</x:String>
+<x:String x:Key="Text.SelfUpdate.GotoDownload" xml:space="preserve">பதிவிறக்கம்</x:String>
+<x:String x:Key="Text.SelfUpdate.IgnoreThisVersion" xml:space="preserve">இந்தப் பதிப்பைத் தவிர்</x:String>
+<x:String x:Key="Text.SelfUpdate.Title" xml:space="preserve">மென்பொருள் புதுப்பி</x:String>
+<x:String x:Key="Text.SelfUpdate.UpToDate" xml:space="preserve">தற்போது புதுப்பிப்புகள் எதுவும் கிடைக்கவில்லை.</x:String>
+</ResourceDictionary>

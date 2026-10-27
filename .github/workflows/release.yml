@@ -1,0 +1,115 @@
+name: Release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: windows-latest
+    outputs:
+      app-version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Validate launcher release tag
+        id: version
+        shell: pwsh
+        run: |
+          $version = $env:GITHUB_REF_NAME
+          if ($version -notmatch '^v(\d+\.\d+\.\d+(?:\.\d+)?)$') { throw 'Expected a release tag such as v0.1.1.' }
+          "version=$($Matches[1])" >> $env:GITHUB_OUTPUT
+      - name: Build launcher
+        run: dotnet build src/SourceGitAutoUpdater/SourceGitAutoUpdater.csproj -c Release
+      - name: Run core regression scenarios
+        run: dotnet run --project tests/SourceGitAutoUpdater.Core.Tests/SourceGitAutoUpdater.Core.Tests.csproj -c Release
+      - name: Run headless UI scenarios
+        run: dotnet run --project tests/SourceGitAutoUpdater.UI.Tests/SourceGitAutoUpdater.UI.Tests.csproj -c Release
+      - name: Verify native Windows integration
+        shell: pwsh
+        run: ./src/SourceGitAutoUpdater/Windows/Verify.ps1
+      - name: Publish real launcher for startup acceptance
+        run: dotnet publish src/SourceGitAutoUpdater/SourceGitAutoUpdater.csproj -c Release -r win-x64 --self-contained true -o artifacts/publish/win-x64
+      - name: Verify real launcher with isolated SourceGit fixture
+        shell: pwsh
+        run: ./tests/verify-launcher.ps1 -PublishDirectory artifacts/publish/win-x64
+  package:
+    needs: validate
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        runtime: [win-x64, win-arm64]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Prepare pinned Inno Setup compiler
+        shell: pwsh
+        run: |
+          $installer = Join-Path $env:RUNNER_TEMP 'innosetup-6.7.2.exe'
+          $compilerDir = Join-Path $env:RUNNER_TEMP 'inno-6.7.2'
+          Invoke-WebRequest -Uri 'https://github.com/jrsoftware/issrc/releases/download/is-6_7_2/innosetup-6.7.2.exe' -OutFile $installer
+          $hash = (Get-FileHash -LiteralPath $installer -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($hash -ne '9f27f8386e554eb093336a1ca5c2dcacb7dbf04ab020889491d7ac53c38a12ff') { throw 'Inno Setup compiler installer SHA-256 mismatch.' }
+          if ((Get-AuthenticodeSignature -LiteralPath $installer).Status -ne 'Valid') { throw 'Inno Setup compiler installer signature is invalid.' }
+          $arguments = @('/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/NOICONS','/CURRENTUSER', ('/DIR="' + $compilerDir + '"'))
+          $process = Start-Process -FilePath $installer -ArgumentList $arguments -WindowStyle Hidden -Wait -PassThru
+          if ($process.ExitCode -ne 0) { throw 'Inno Setup compiler installation failed.' }
+          "ISCC_PATH=$compilerDir\ISCC.exe" >> $env:GITHUB_ENV
+      - name: Package launcher-only portable ZIP and per-user installer
+        shell: pwsh
+        env:
+          APP_VERSION: ${{ needs.validate.outputs.app-version }}
+          TARGET_RUNTIME: ${{ matrix.runtime }}
+        run: ./build/package.ps1 -RuntimeIdentifier $env:TARGET_RUNTIME -Version $env:APP_VERSION -IsccPath $env:ISCC_PATH
+      - name: Verify bootstrap installer and downloaded-data preservation
+        if: matrix.runtime == 'win-x64'
+        shell: pwsh
+        env:
+          APP_VERSION: ${{ needs.validate.outputs.app-version }}
+        run: |
+          $installer = Join-Path $PWD ("artifacts/SourceGitAutoUpdater_" + $env:APP_VERSION + "_win-x64_setup.exe")
+          ./build/verify-installer.ps1 -InstallerPath $installer
+      - uses: actions/upload-artifact@v4
+        with:
+          name: packages-${{ matrix.runtime }}
+          if-no-files-found: error
+          retention-days: 7
+          path: |
+            artifacts/*_portable.zip
+            artifacts/*_setup.exe
+            artifacts/*.sha256
+            artifacts/*_metadata.json
+  publish:
+    needs: package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: packages-*
+          merge-multiple: true
+          path: dist
+      - name: Publish release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" dist/* --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" dist/* --verify-tag --generate-notes --title "$GITHUB_REF_NAME"
+          fi
+
+
+
+
+
+
+

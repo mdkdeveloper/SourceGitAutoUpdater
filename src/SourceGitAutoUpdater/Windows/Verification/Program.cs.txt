@@ -1,0 +1,120 @@
+using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
+using SourceGitAutoUpdater.Windows;
+
+[System.Runtime.Versioning.SupportedOSPlatform("windows")]
+internal static class Probe
+{
+    [STAThread]
+    private static int Main(string[] args)
+    {
+        if (args.Length >= 2 && args[0] == "--echo-arguments")
+        {
+            File.WriteAllText(args[1], System.Text.Json.JsonSerializer.Serialize(new { Arguments = args.Skip(2).ToArray(), WorkingDirectory = Environment.CurrentDirectory }));
+            return 0;
+        }
+        var root = AppContext.BaseDirectory;
+        var executable = Environment.ProcessPath!;
+        TaskbarIntegration.SetProcessIdentity();
+        Assert(ProcessHost.HasManagedProcess(executable), "Path-based process discovery");
+        using (var integration = new TaskbarIntegration(executable, executable))
+        {
+            integration.Start();
+            integration.Refresh();
+        }
+        Console.WriteLine("PASS native hook registration and detach");
+        var window = CreateWindowEx(0, "STATIC", "Hidden updater integration probe", 0, 0, 0, 1, 1, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+        Assert(window != IntPtr.Zero, "Hidden window creation");
+        try
+        {
+            var iid = typeof(ShellInterop.IPropertyStore).GUID;
+            Marshal.ThrowExceptionForHR(ShellInterop.SHGetPropertyStoreForWindow(window, in iid, out var store));
+            try
+            {
+                ShellInterop.SetString(store, ShellInterop.AppId, TaskbarIntegration.AppId);
+                ShellInterop.SetString(store, ShellInterop.RelaunchCommand, "\"" + executable + "\"");
+                Marshal.ThrowExceptionForHR(store.GetValue(in ShellInterop.AppId, out var value));
+                using (value) { Assert(value.AsString() == TaskbarIntegration.AppId, "Window AppUserModelID round-trip"); }
+                var empty = new ShellInterop.PropVariant();
+                Marshal.ThrowExceptionForHR(store.SetValue(in ShellInterop.AppId, in empty));
+                Marshal.ThrowExceptionForHR(store.SetValue(in ShellInterop.RelaunchCommand, in empty));
+            }
+            finally { Marshal.FinalReleaseComObject(store); }
+        }
+        finally { DestroyWindow(window); }
+        var shortcutPath = Path.Combine(root, "Probe.lnk");
+        ShortcutManager.Ensure(executable, shortcutPath);
+        object link = new ShellInterop.ShellLink();
+        try
+        {
+            ((IPersistFile)link).Load(shortcutPath, 0);
+            var store = (ShellInterop.IPropertyStore)link;
+            Marshal.ThrowExceptionForHR(store.GetValue(in ShellInterop.AppId, out var value));
+            using (value) { Assert(value.AsString() == TaskbarIntegration.AppId, "Shortcut AppUserModelID round-trip"); }
+        }
+        finally { Marshal.FinalReleaseComObject(link); }
+        using (var primary = new LauncherInstanceBroker(root))
+        {
+            Assert(primary.IsPrimary, "Primary broker ownership");
+            var completion = new TaskCompletionSource<(string[], string)>(TaskCreationOptions.RunContinuationsAsynchronously);
+            primary.LaunchRequested += (arguments, cwd) => completion.TrySetResult((arguments, cwd));
+            primary.Start();
+            using var secondary = new LauncherInstanceBroker(root);
+            Assert(!secondary.IsPrimary, "Secondary broker contention");
+            string[] arguments = ["space value", "", "quote\"value", "українська", "line\nvalue"];
+            secondary.ForwardAsync(arguments, root).GetAwaiter().GetResult();
+            var received = completion.Task.WaitAsync(TimeSpan.FromSeconds(5)).GetAwaiter().GetResult();
+            Assert(received.Item1.SequenceEqual(arguments) && received.Item2 == root, "IPC arguments and working directory round-trip");
+        }
+        var output = Path.Combine(root, "launch-arguments.json");
+        string[] forwarded = ["space value", "", "quote\"value", "українська", "line\nvalue"];
+        using (var child = ProcessHost.Launch(executable, new[] { "--echo-arguments", output }.Concat(forwarded), root))
+        {
+            Assert(child is not null && child.WaitForExit(5000) && child.ExitCode == 0, "ProcessHost child launch");
+        }
+        using (var json = System.Text.Json.JsonDocument.Parse(File.ReadAllText(output)))
+        {
+            var roundTrip = json.RootElement.GetProperty("Arguments").EnumerateArray().Select(value => value.GetString()).ToArray();
+            Assert(roundTrip.SequenceEqual(forwarded) && json.RootElement.GetProperty("WorkingDirectory").GetString() == root.TrimEnd(Path.DirectorySeparatorChar), "ProcessHost arguments and working directory round-trip");
+        }
+        using (var shared = InstallationGate.AcquireShared(root))
+        using (var anotherShared = InstallationGate.AcquireShared(root))
+        {
+            Assert(InstallationGate.TryAcquireExclusive(root) is null, "Shared viewers prevent exclusive installation");
+        }
+        var exclusive = InstallationGate.TryAcquireExclusive(root);
+        Assert(exclusive is not null, "Exclusive installation gate after viewers close");
+        try
+        {
+            Assert(InstallationGate.TryAcquireExclusive(root) is null, "Concurrent exclusive installation is rejected");
+            using var cancellation = new CancellationTokenSource(TimeSpan.FromMilliseconds(100));
+            try
+            {
+                using var rejected = InstallationGate.AcquireShared(root, cancellation.Token);
+                throw new InvalidOperationException("A viewer entered during an exclusive installation.");
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("PASS shared viewer waits and respects cancellation");
+            }
+        }
+        finally { exclusive!.Dispose(); }
+        using (InstallationGate.AcquireShared(root))
+            Console.WriteLine("PASS shared viewer enters after installation ends");
+        var specialOutput = Path.Combine(root, "special-mode-arguments.json");
+        Assert(SpecialModeHost.Run(executable, executable, new[] { "--echo-arguments", specialOutput, "special-mode" }, root) == 0,
+            "Special-mode native message loop propagates exit code");
+        Assert(File.Exists(specialOutput), "Special-mode child executes without Avalonia initialization");
+        Console.WriteLine("All Windows integration probes passed.");
+        return 0;
+    }
+    private static void Assert(bool result, string label)
+    {
+        if (!result) throw new InvalidOperationException(label);
+        Console.WriteLine("PASS " + label);
+    }
+    [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    private static extern IntPtr CreateWindowEx(uint exStyle, string className, string title, uint style, int x, int y, int width, int height, IntPtr parent, IntPtr menu, IntPtr instance, IntPtr parameter);
+    [DllImport("user32.dll")]
+    private static extern bool DestroyWindow(IntPtr window);
+}
