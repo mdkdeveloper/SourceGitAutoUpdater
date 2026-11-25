@@ -139,8 +139,10 @@ Test("archive symbolic links rejected", () =>
 });
 Test("official download URL constrained to upstream HTTPS release assets", () =>
 {
+    // Current owner (the repository moved from sourcegit-scm to sourcegit-org) and the former one.
+    Assert(UpdaterEngine.IsOfficialAssetUrl(new Uri("https://github.com/sourcegit-org/sourcegit/releases/download/v2026.24/sourcegit_2026.24.win-x64.zip")));
     Assert(UpdaterEngine.IsOfficialAssetUrl(new Uri("https://github.com/sourcegit-scm/sourcegit/releases/download/v1/package.zip")));
-    foreach (var url in new[] { "http://github.com/sourcegit-scm/sourcegit/releases/download/a", "https://evil.test/sourcegit-scm/sourcegit/releases/download/a", "https://github.com/attacker/sourcegit/releases/download/a", "https://github.com/sourcegit-scm/sourcegit/releases/download-fake/a" })
+    foreach (var url in new[] { "http://github.com/sourcegit-scm/sourcegit/releases/download/a", "https://evil.test/sourcegit-scm/sourcegit/releases/download/a", "https://github.com/attacker/sourcegit/releases/download/a", "https://github.com/sourcegit-org/sourcegit-fake/releases/download/a", "https://github.com/sourcegit-org.evil/sourcegit/releases/download/a", "https://github.com/sourcegit-scm/sourcegit/releases/download-fake/a" })
         Assert(!UpdaterEngine.IsOfficialAssetUrl(new Uri(url)));
 });
 Test("PE executable validates architecture and exact release version", () =>

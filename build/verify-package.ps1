@@ -28,7 +28,7 @@ try {
     $metadataEntry = $archive.Entries | Where-Object FullName -CEQ 'package-metadata.json'
     $reader = [IO.StreamReader]::new($metadataEntry.Open())
     try { $metadata = $reader.ReadToEnd() | ConvertFrom-Json -AsHashtable } finally { $reader.Dispose() }
-    if ($metadata.launcher_version -cne $Version -or $metadata.runtime -cne $RuntimeIdentifier -or $metadata.download_on_first_launch -ne $true -or $metadata.sourcegit_repository -cne 'https://github.com/sourcegit-scm/sourcegit') { throw 'Bootstrap package metadata does not match the requested release.' }
+    if ($metadata.launcher_version -cne $Version -or $metadata.runtime -cne $RuntimeIdentifier -or $metadata.download_on_first_launch -ne $true -or $metadata.sourcegit_repository -cne 'https://github.com/sourcegit-org/sourcegit') { throw 'Bootstrap package metadata does not match the requested release.' }
     foreach ($obsolete in @('sourcegit_tag', 'sourcegit_asset', 'sourcegit_sha256', 'sourcegit_digest_verified')) {
         if ($metadata.ContainsKey($obsolete)) { throw "Bootstrap metadata incorrectly describes a bundled release: $obsolete" }
     }

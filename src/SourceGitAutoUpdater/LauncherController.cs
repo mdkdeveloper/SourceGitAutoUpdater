@@ -324,7 +324,7 @@ internal sealed class LauncherController(IClassicDesktopStyleApplicationLifetime
         ((App)Application.Current!).ApplyPreferences(new JsonObject(), Program.Arguments);
         var scaleValue = Program.Arguments.FirstOrDefault(a => a.StartsWith("--scale="))?[8..];
         double zoom = double.TryParse(scaleValue, CultureInfo.InvariantCulture, out var scale) ? Math.Clamp(scale, .5, 3) : 1;
-        var asset = new ReleaseAsset("preview", new Uri("https://github.com/sourcegit-scm/sourcegit/releases/download/v2026.24/preview.zip"), 0, null);
+        var asset = new ReleaseAsset("preview", new Uri("https://github.com/sourcegit-org/sourcegit/releases/download/v2026.24/preview.zip"), 0, null);
         var release = new ReleaseInfo("v2026.24", new Version(2026,24,0,0), DateTimeOffset.Parse("2026-10-27T12:00:00Z"),
             "## What's Changed\n\n* Improve repository navigation and diff views.\n* Fix checkout and branch switching edge cases.\n* Update translations.\n\nFull Changelog: `v2026.23...v2026.24`", asset);
         var window = new UpdateWindow(new UpdateViewModel(release, new Version(2026,23)), zoom);

@@ -4,7 +4,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <ApplicationIcon>App.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Version>0.1.1</Version>
+    <Version>0.1.2</Version>
     <Product>SourceGitAutoUpdater</Product>
     <Description>Automatic updates for official SourceGit releases</Description>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>

@@ -74,7 +74,7 @@ Copy-Item -LiteralPath (Join-Path $runtimePackageDirectory 'THIRD-PARTY-NOTICES.
 $metadata = [ordered]@{
     launcher_version = $Version
     runtime = $RuntimeIdentifier
-    sourcegit_repository = 'https://github.com/sourcegit-scm/sourcegit'
+    sourcegit_repository = 'https://github.com/sourcegit-org/sourcegit'
     download_on_first_launch = $true
     packaged_at_utc = [DateTimeOffset]::UtcNow.ToString('o')
 }

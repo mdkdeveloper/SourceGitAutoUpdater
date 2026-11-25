@@ -18,7 +18,7 @@ public sealed class UpdateViewModel : ObservableObject
     public string UpdateLabel => Texts.Update;
     public string SetupLabel => Texts.T("Installing SourceGit", "Встановлення SourceGit");
     public string CancelLabel => Texts.T("Cancel", "Скасувати");
-    public string Attribution => "SourceGit by sourcegit-scm and contributors";
+    public string Attribution => "SourceGit by sourcegit-org and contributors";
     private bool _busy;
     public bool IsBusy
     {

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-A Windows-only launcher/updater for [SourceGit](https://github.com/sourcegit-scm/sourcegit) (C#, .NET 10, Avalonia 11.3.22). Release packages contain **only the launcher and its self-contained runtime**; the official, unmodified SourceGit release is downloaded from GitHub on first launch and on later updates. SourceGit binaries are never patched, bundled, or embedded. Packaging and verification scripts actively reject a publish/archive that contains a SourceGit payload, so do not add one.
+A Windows-only launcher/updater for [SourceGit](https://github.com/sourcegit-org/sourcegit) (C#, .NET 10, Avalonia 11.3.22). Release packages contain **only the launcher and its self-contained runtime**; the official, unmodified SourceGit release is downloaded from GitHub on first launch and on later updates. SourceGit binaries are never patched, bundled, or embedded. Packaging and verification scripts actively reject a publish/archive that contains a SourceGit payload, so do not add one.
 
 ## Commands
 
@@ -37,7 +37,7 @@ Two projects:
   - `AppPaths`: the layout. **Portable vs installed mode is decided by whether `installed.json` exists next to the exe** (the Inno installer writes it). Portable mode keeps SourceGit settings in `SourceGit/data` and updater state in `.updater/`. Installed mode uses `%APPDATA%\SourceGit` and `%LOCALAPPDATA%\SourceGitAutoUpdater`. SourceGit itself is always at `<root>/SourceGit/SourceGit.exe`.
   - `PreferencesStore`: edits SourceGit's `preference.json` as a `JsonObject` so unknown fields survive. It sets `Check4UpdatesOnStartup=false` (the launcher owns updates) and `IgnoreUpdateTag` (Skip). Writes are atomic via `AtomicFile` (temp file + `File.Replace` with a `.bak` backup).
   - `SourceGitLease`: an exclusive handle on SourceGit's own `data/process.lock`. Callers must hold it before mutating preferences or installing.
-  - `ReleaseService` (`Releases.cs`): queries the GitHub `releases/latest` API, parses numeric tags (rejects prereleases), and picks the architecture asset.
+  - `ReleaseService` (`Releases.cs`): queries GitHub `repositories/<id>/releases/latest` by the stable repository ID (SourceGit moved from `sourcegit-scm` to `sourcegit-org`; `OfficialRepositories` lists both accepted owners), parses numeric tags (rejects prereleases), and picks the architecture asset.
   - `UpdaterEngine`: a transactional install. It downloads to `.sourcegit-update/`, extracts with zip-slip and size guards, validates the staged `SourceGit.exe` version, then moves old entries to `backup/` and new entries in. A `journal.json` phase (`prepared` → `backing-up` → `installing` → `committed`, with `restoring`/`rolled-back` for recovery) makes `Recover()` able to roll back after a crash at any step. **`SourceGit/data` is never moved**, so the lock and settings stay in place. The optional `checkpoint` callback exists so tests can inject failures and cancellation mid-transaction. Download URLs must pass `IsOfficialAssetUrl`.
   - `BootstrapInstaller`: the first-run install of the latest release. It ignores Skip and never touches preferences.
 - **`SourceGitAutoUpdater`**: the Avalonia app plus Windows integration.

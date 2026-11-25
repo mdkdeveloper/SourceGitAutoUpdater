@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using AvaloniaEdit.TextMate;
+using SourceGitAutoUpdater.Core;
 using SourceGitAutoUpdater.ViewModels;
 using TextMateSharp.Grammars;
 
@@ -84,7 +85,7 @@ public partial class UpdateWindow : Window
     }
     private void OpenSourceGit(object? sender, RoutedEventArgs e)
     {
-        try { Process.Start(new ProcessStartInfo("https://github.com/sourcegit-scm/sourcegit") { UseShellExecute = true }); }
+        try { Process.Start(new ProcessStartInfo(ReleaseService.RepositoryUrl) { UseShellExecute = true }); }
         catch { /* A browser error must not interrupt installation. */ }
     }
     protected override void OnKeyDown(KeyEventArgs e)

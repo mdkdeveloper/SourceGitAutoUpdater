@@ -163,7 +163,7 @@ public sealed class UpdaterEngine
 
     public static bool IsOfficialAssetUrl(Uri uri) => uri.Scheme == Uri.UriSchemeHttps
         && string.Equals(uri.Host, "github.com", StringComparison.OrdinalIgnoreCase)
-        && uri.AbsolutePath.StartsWith("/sourcegit-scm/sourcegit/releases/download/", StringComparison.Ordinal)
+        && ReleaseService.OfficialRepositories.Any(repository => uri.AbsolutePath.StartsWith("/" + repository + "/releases/download/", StringComparison.OrdinalIgnoreCase))
         && string.IsNullOrEmpty(uri.UserInfo);
 
     private async Task DownloadAsync(ReleaseAsset asset, string target, IProgress<UpdateProgress>? progress, CancellationToken token)

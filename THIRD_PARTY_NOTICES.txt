@@ -1,4 +1,4 @@
-Adapted SourceGit UI resources and components: https://github.com/sourcegit-scm/sourcegit
+Adapted SourceGit UI resources and components: https://github.com/sourcegit-org/sourcegit
 Original upstream source version: 2026.23
 
 The MIT License (MIT)

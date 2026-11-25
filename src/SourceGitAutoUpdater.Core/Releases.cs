@@ -15,6 +15,13 @@ public sealed record UpdateProgress(string Phase, long Received, long? Total)
 
 public sealed class ReleaseService
 {
+    // SourceGit moved from sourcegit-scm to sourcegit-org. The numeric repository ID is
+    // stable across renames and transfers; the owner names below are the only accepted
+    // release download locations (current first).
+    public const long RepositoryId = 425837195;
+    public const string RepositoryUrl = "https://github.com/sourcegit-org/sourcegit";
+    public static readonly string[] OfficialRepositories = ["sourcegit-org/sourcegit", "sourcegit-scm/sourcegit"];
+
     private readonly HttpClient _client;
     public ReleaseService(HttpClient? client = null) => _client = client ?? new HttpClient();
 
@@ -22,7 +29,7 @@ public sealed class ReleaseService
     {
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         timeout.CancelAfter(TimeSpan.FromSeconds(5));
-        using var request = new HttpRequestMessage(HttpMethod.Get, "https://api.github.com/repos/sourcegit-scm/sourcegit/releases/latest");
+        using var request = new HttpRequestMessage(HttpMethod.Get, $"https://api.github.com/repositories/{RepositoryId}/releases/latest");
         request.Headers.UserAgent.ParseAdd("SourceGitAutoUpdater/1.0");
         request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github+json"));
         using var response = await _client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, timeout.Token);
